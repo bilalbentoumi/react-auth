@@ -1,16 +1,19 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import Input from './components/Input'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import Input from '../components/Input'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { login } from '../utils/auth'
+import { useSelector } from 'react-redux'
 
-const SignIn = () => {
+const Login = () => {
 
+  
+  const loggedIn = useSelector(state => state.auth.loggedIn)
   const navigate = useNavigate()
 
   const formRef = useRef()
-  const [loginError, setLoginError] = useState('')
+  const [loginError, setLoginError] = useState(false)
 
   const initialValues = {
     email: 'killua@example.com',
@@ -22,28 +25,20 @@ const SignIn = () => {
     password: yup.string().required('Please enter your password')
   })
 
-  useEffect(() => {
+  if (loggedIn) {
 
-    if (localStorage.getItem('loggedIn')) {
-      
-      navigate('/')
-    }
-  }, [])
+    return <Navigate to="/" />
+  }
 
   const onSubmit = async (values) => {
 
-    const user = await axios.post('login', values)
-
-    if (user.data.accessJWT) {
-
-      localStorage.setItem('accessJWT', user.data.accessJWT)
-      localStorage.setItem('refreshJWT', user.data.refreshJWT)
-      localStorage.setItem('loggedIn', true)
-
-      axios.defaults.headers.common['Authorization'] = `Bearer ${user.data.accessJWT}`
+    login(values).then(res => {
 
       navigate('/')
-    }
+    }).catch((err) => {
+
+      setLoginError(true)
+    })
   }
 
   return (
@@ -59,6 +54,8 @@ const SignIn = () => {
               <h2 className="text-4xl font-semibold mb-4">Login</h2>
 
               <p className="text-gray-400 font-medium mb-4">Securely login to your PollApp account</p>
+
+              {loginError && <div className="bg-red-100 text-red-800 rounded-md py-3 px-4 my-4">Username or password is incorrect</div>}
 
               <div className="mb-4">
                 <Input type="text" name="email" error={errors.email} onChange={handleChange} onBlur={handleBlur} value={values.email} placeholder="Email" />
@@ -84,4 +81,4 @@ const SignIn = () => {
   )
 }
 
-export default SignIn
+export default Login

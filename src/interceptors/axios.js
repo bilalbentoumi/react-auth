@@ -11,22 +11,25 @@ axios.interceptors.response.use(response => response, async error => {
 
   if (error.response.status === 401) {
 
-    const res = await axios.post('refresh', {
-      refreshJWT: localStorage.getItem('refreshJWT')
-    })
+    if (localStorage.getItem('refreshJWT')) {
 
-    if (res.data.accessJWT) {
+      const res = await axios.post('refresh', {
+        refreshJWT: localStorage.getItem('refreshJWT')
+      })
 
-      localStorage.setItem('accessJWT', res.data.accessJWT)
-      localStorage.setItem('refreshJWT', res.data.refreshJWT)
-      localStorage.setItem('loggedIn', true)
+      if (res.data.accessJWT) {
 
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessJWT}`
+        localStorage.setItem('accessJWT', res.data.accessJWT)
+        localStorage.setItem('refreshJWT', res.data.refreshJWT)
+        localStorage.setItem('loggedIn', true)
 
+        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessJWT}`
+
+        window.location.href = '/'
+
+      }
     }
 
-    window.location.href = '/'
+    window.location.href = '/login'
   }
-
-  window.location.href = '/signin'
 })
