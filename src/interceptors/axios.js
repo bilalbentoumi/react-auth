@@ -23,10 +23,7 @@ axios.interceptors.response.use(response => response, async error => {
         localStorage.setItem('refreshJWT', res.data.refreshJWT)
         localStorage.setItem('loggedIn', true)
 
-        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessJWT}`
-
         window.location.href = '/'
-
       }
     }
 
