@@ -1,5 +1,7 @@
 const Header = () => {
 
+  const loggedIn = localStorage.getItem('loggedIn')
+
   const logout = () => {
 
   }
@@ -19,8 +21,9 @@ const Header = () => {
         </a>
 
         <ul className="gap-10 hidden sm:flex items-center">
+
           <li>
-            <a href="/" lassName="block text-gray-400 hover:text-gray-500 text-md font-semibold duration-75">Public Polls</a>
+            <a href="/" className="block text-gray-400 hover:text-gray-500 text-md font-semibold duration-75">Public Polls</a>
           </li>
           <li>
             <a href="/" className="block text-gray-400 hover:text-gray-500 text-md font-semibold duration-75">Go Pro</a>
@@ -28,15 +31,22 @@ const Header = () => {
           <li>
             <a href="/" className="block text-green-400 hover:text-green-500 text-md font-semibold duration-75">Create Poll</a>
           </li>
-          <li>
-            <a href="/auth/signin" className="block text-gray-400 hover:text-gray-500 text-md font-semibold duration-75">Login</a>
-          </li>
-          <li>
-            <a href="/auth/signup" className="block px-6 py-2 bg-blue-400 hover:bg-blue-500 text-white text-md font-semibold rounded-md duration-75">Sign Up</a>
-          </li>
-          <li>
+
+          {!loggedIn &&
+            <>
+              <li>
+                <a href="/auth/signin" className="block text-gray-400 hover:text-gray-500 text-md font-semibold duration-75">Login</a>
+              </li>
+              <li>
+                <a href="/auth/signup" className="block px-6 py-2 bg-blue-400 hover:bg-blue-500 text-white text-md font-semibold rounded-md duration-75">Sign Up</a>
+              </li>
+            </>
+          }
+
+          {loggedIn && <li>
             <button onClick={logout} className="block px-6 py-2 bg-blue-400 hover:bg-blue-500 text-white text-md font-semibold rounded-md duration-75">Logout</button>
-          </li>
+          </li>}
+
         </ul>
 
       </div>
